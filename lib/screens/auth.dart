@@ -14,7 +14,7 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
   String _email;
   String _password;
 
-  bool _isLogin = true;
+  bool _isLogin = true; // true Вход, false Регистрация
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -75,7 +75,7 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
         ///splashColor: uBlue,
         //highlightColor: uBlue,
 
-        color: uBlue,
+        color: uBlue,//константа синего цвета, в папке consts
         child: Text(
           text,
           style: TextStyle(
