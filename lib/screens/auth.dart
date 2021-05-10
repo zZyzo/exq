@@ -1,6 +1,10 @@
 import 'package:exquisite/consts/consts.dart';
+import 'package:exquisite/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:exquisite/screens/landing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AuthorizationPage extends StatefulWidget {
@@ -13,11 +17,49 @@ class AuthorizationPage extends StatefulWidget {
 class _AuthorizationPageState extends State<AuthorizationPage> {
   String _email;
   String _password;
+  String _name;
 
-  bool _isLogin = true; // true Вход, false Регистрация
+  AuthService _authService = AuthService();
+
+  bool _isLogin = true;
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+
+  void _buttonActionLogin() async {
+    _email = _emailController.text;
+    _password = _passwordController.text;
+    _name = _nameController.text;
+
+    if (_email.isEmpty || _password.isEmpty) {
+      Fluttertoast.showToast(msg: 'Заполните все поля');
+      return;
+    }
+
+    User user = await _authService.signIn(_email.trim(), _password.trim());
+    print(user.uid);
+    print(user.email);
+
+    _emailController.clear();
+    _passwordController.clear();
+  }
+
+  void _buttonActionRegister() async {
+    _email = _emailController.text;
+    _password = _passwordController.text;
+    _name = _nameController.text;
+
+    if (_email.isEmpty || _password.isEmpty || _name.isEmpty) {
+      Fluttertoast.showToast(msg: 'Заполните все поля');
+      return;
+    }
+
+    User user = await _authService.register(_name, _email.trim(), _password.trim());
+
+    _emailController.clear();
+    _passwordController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +117,7 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
         ///splashColor: uBlue,
         //highlightColor: uBlue,
 
-        color: uBlue,//константа синего цвета, в папке consts
+        color: uBlue,
         child: Text(
           text,
           style: TextStyle(
@@ -97,8 +139,8 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
             if (!_isLogin)
               Padding(
                   padding: EdgeInsets.only(bottom: 10.0, top: 40.0),
-                  child: _input(
-                      Icon(Icons.email), 'Имя', _emailController, false)),
+                  child:
+                      _input(Icon(Icons.email), 'Имя', _nameController, false)),
             Padding(
                 padding:
                     EdgeInsets.only(bottom: 10.0, top: _isLogin ? 40.0 : 0),
@@ -122,23 +164,16 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
       );
     }
 
-    void _buttonAction() {
-      _email = _emailController.text;
-      _password = _passwordController.text;
-
-      _emailController.clear();
-      _passwordController.clear();
-    }
-
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: <Widget>[
             _logo(),
             _isLogin
                 ? Column(
                     children: <Widget>[
-                      _form('Войти', _buttonAction),
+                      _form('Войти', _buttonActionLogin),
                       Padding(
                         padding: EdgeInsets.all(10),
                         child: GestureDetector(
@@ -156,7 +191,7 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
                   )
                 : Column(
                     children: <Widget>[
-                      _form('Регистрация', _buttonAction),
+                      _form('Регистрация', _buttonActionRegister),
                       Padding(
                         padding: EdgeInsets.all(10),
                         child: GestureDetector(
