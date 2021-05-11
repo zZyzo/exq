@@ -1,3 +1,4 @@
+import 'package:exquisite/consts/consts.dart';
 import 'package:exquisite/screens/landing.dart';
 import 'package:exquisite/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,15 +16,24 @@ void main() async {
 class ExquisiteApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    //
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    //Автоповорот экрана откл.
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
+        statusBarColor: Colors.transparent, //Белый статус бар
       ),
       child: StreamProvider<User>.value(
         value: AuthService().currentUser,
         initialData: null,
         child: MaterialApp(
-          title: 'exquisite',
+          debugShowCheckedModeBanner: false,
+          title: cName,
           theme: ThemeData(
               primaryColor: Colors.white,
               textTheme: TextTheme(title: TextStyle(color: Colors.black))),

@@ -1,4 +1,4 @@
-import 'package:exquisite/screens/auth.dart';
+import 'package:exquisite/screens/authPage.dart';
 import 'package:exquisite/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,9 @@ class LandingPage extends StatelessWidget {
     final User user = Provider.of<User>(context);
 
     final bool isLoggedIN = user != null;
-    return isLoggedIN ? HomePage() : AuthorizationPage();
+    if(isLoggedIN == true && user.emailVerified == true){
+      return HomePage();
+    }
+    else return AuthorizationPage();
   }
 }

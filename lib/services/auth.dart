@@ -17,9 +17,13 @@ class AuthService {
           }
           else Fluttertoast.showToast(msg: ' Проверте правильность \n введенных вами данных');
       print(onError);
+
     });
     User user = userCredential.user;
     if (user != null) {
+      user.updateProfile(displayName: name);
+      user.sendEmailVerification();
+      Fluttertoast.showToast(msg: 'Письмо отправлено на почту');
       print("reg " + user.email);
       return user;
     }
@@ -42,8 +46,6 @@ class AuthService {
   }
 
   Future logOut() async {
-    Fluttertoast.showToast(msg: 'Вы успешно вышли из своего аккаунта');
-    print('logout ' + _fAuth.currentUser.email);
     await _fAuth.signOut();
   }
 
